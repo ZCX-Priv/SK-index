@@ -355,11 +355,7 @@ function seList() {
     var html = "";
     var se_list = getSeList();
     for (var i in se_list) {
-        // 确保URL有代理前缀
-        var url = se_list[i]["url"];
-        if (url !== "/" && !url.startsWith("/")) {
-            url = "/" + url;
-        }
+        var url = processUrl(se_list[i]["url"], se_list[i]["proxy"] !== false);
         html += `<div class='se-li' data-url='${url}' data-name='${se_list[i]["name"]}' data-icon='${se_list[i]["icon"]}'>
         <a class='se-li-text'><i id='icon-sou-list' class='${se_list[i]["icon"]}'></i><span>${se_list[i]["title"]}</span></a></div>`;
     }
@@ -622,10 +618,6 @@ $(document).ready(function () {
     // 搜索引擎列表点击
     $(".search-engine-list").on("click", ".se-li", function () {
         var url = $(this).attr('data-url');
-        // 确保URL有代理前缀
-        if (url !== "/" && !url.startsWith("/")) {
-            url = "/" + url;
-        }
         var name = $(this).attr('data-name');
         var icon = $(this).attr('data-icon');
         $(".search").attr("action", url);
@@ -778,13 +770,9 @@ $(document).ready(function () {
         var title = $(".se_add_content input[name='title']").val();
         var url = $(".se_add_content input[name='url']").val();
         var name = $(".se_add_content input[name='name']").val();
+        var proxy = $(".se_add_content input[name='proxy']").prop('checked');
         //var icon = $(".se_add_content input[name='icon']").val();
         var icon = "iconfont icon-wangluo";
-        // 确保URL有代理前缀（除了特殊URL如"/"）
-        if (url !== "/" && !url.startsWith("/")) {
-            url = "/" + url;
-        }
-
 
         var num = /^\+?[1-9][0-9]*$/;
         if (!num.test(key)) {
@@ -808,6 +796,7 @@ $(document).ready(function () {
                             url: url,
                             name: name,
                             icon: icon,
+                            proxy: proxy,
                         };
                         setSeList(se_list);
                         setSeInit();
@@ -841,6 +830,7 @@ $(document).ready(function () {
             url: url,
             name: name,
             icon: icon,
+            proxy: proxy,
         };
         setSeList(se_list);
         setSeInit();
@@ -870,6 +860,8 @@ $(document).ready(function () {
         $(".se_add_content input[name='title']").val(se_list[key]["title"]);
         $(".se_add_content input[name='url']").val(se_list[key]["url"]);
         $(".se_add_content input[name='name']").val(se_list[key]["name"]);
+        // 设置代理复选框状态，如果未定义则默认为true
+        $("#se_proxy").prop('checked', se_list[key]["proxy"] !== false);
         // $(".se_add_content input[name='icon']").val("iconfont icon-Earth");
 
         //隐藏列表
