@@ -3,44 +3,50 @@ var se_list_preinstall = {
     '1': {
         id: 1,
         title: "百度",
-        url: "/https://www.baidu.com/s",
+        url: "https://www.baidu.com/s",
         name: "wd",
         icon: "iconfont icon-baidu",
+        proxy: true,
     },
     '2': {
         id: 2,
         title: "必应",
-        url: "/https://cn.bing.com/search",
+        url: "https://cn.bing.com/search",
         name: "q",
         icon: "iconfont icon-bing",
+        proxy: true,
     },
     '3': {
         id: 3,
         title: "Yandex",
-        url: "/https://yandex.com/search/",
+        url: "https://yandex.com/search/",
         name: "text",
         icon: "iconfont-exp icon-yandex",
+        proxy: true,
     },
     '4': {
         id: 4,
         title: "搜狗",
-        url: "/https://www.sogou.com/web",
+        url: "https://www.sogou.com/web",
         name: "query",
         icon: "iconfont icon-sougousousuo",
+        proxy: true,
     },
     '5': {
         id: 5,
         title: "360",
-        url: "/https://www.so.com/s",
+        url: "https://www.so.com/s",
         name: "q",
         icon: "iconfont icon-360sousuo",
+        proxy: true,
     },
     '6': {
         id: 6,
         title: "夸克",
-        url: "/https://s.quark.cn/s",
+        url: "https://s.quark.cn/s",
         name: "q",
         icon: "iconfont-exp icon-kuake",
+        proxy: true,
     },
     '7': {
         id: 7,
@@ -48,6 +54,7 @@ var se_list_preinstall = {
         url: "/",
         name: "url",
         icon: "iconfont-exp icon-URLguanli",
+        proxy: false,
     }
 };
 
@@ -327,11 +334,7 @@ function searchData() {
     var se_list = getSeList();
     var defaultSe = se_list[se_default];
     if (defaultSe) {
-        // 确保URL有代理前缀
-        var url = defaultSe["url"];
-        if (url !== "/" && !url.startsWith("/")) {
-            url = "/" + url;
-        }
+        var url = processUrl(defaultSe["url"], defaultSe["proxy"] !== false);
         $(".search").attr("action", url);
         $("#icon-se").attr("class", defaultSe["icon"]);
         $(".wd").attr("name", defaultSe["name"]);
